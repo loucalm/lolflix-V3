@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  # Le conteneur PHP + Node.js
+  # 1. Le conteneur PHP (Exécute Laravel et Vite)
   app:
     build:
       context: .
@@ -9,6 +9,8 @@ services:
     image: lolflix-app
     container_name: lolflix-app
     restart: unless-stopped
+    ports:
+      - "5173:5173" # UNIQUE ET OBLIGATOIRE ICI POUR VITE (DEV)
     tty: true
     environment:
       SERVICE_NAME: app
@@ -17,13 +19,13 @@ services:
     networks:
       - lolflix-network
 
-  # Le serveur Web Nginx (qui remplace LiteSpeed en local)
+  # 2. Le serveur Web Nginx (Reçoit les requêtes HTTP sur le port 80)
   webserver:
     image: nginx:alpine
     container_name: lolflix-webserver
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "80:80" # LE PORT 80 RESTE UNIQUEMENT ICI
     volumes:
       - ./:/var/www
       - ./docker-compose/nginx:/etc/nginx/conf.d/
@@ -32,14 +34,13 @@ services:
     depends_on:
       - app
 
-  # La Base de données MySQL (Image 2)
+  # 3. La Base de données MySQL
   db:
     image: mysql:8.0
     container_name: lolflix-db
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: u659328069_lolflix
-      # En local, on définit un mot de passe root simple
       MYSQL_ROOT_PASSWORD: root
     ports:
       - "3306:3306"
@@ -47,6 +48,21 @@ services:
       - lolflix-db-data:/var/lib/mysql
     networks:
       - lolflix-network
+
+  # L'interface phpMyAdmin pour gérer la BDD en local
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: lolflix-phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8080:80" # On l'expose sur le port 8080 de ton PC
+    environment:
+      PMA_HOST: db # Indique à PMA de se connecter au service nommé "db"
+      MYSQL_ROOT_PASSWORD: root # Le mot de passe défini dans ton service db
+    networks:
+      - lolflix-network
+    depends_on:
+      - db
 
 networks:
   lolflix-network:

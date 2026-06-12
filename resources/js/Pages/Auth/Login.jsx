@@ -89,12 +89,25 @@ export default function Login({ status }) {
                     >
                         Créer un compte ?
                     </Link>
-                    <PrimaryButton
-                        className="ms-4 bg-red-600 hover:bg-red-700 text-white font-bold"
-                        disabled={processing}
-                    >
-                        Se connecter
-                    </PrimaryButton>
+
+                    <div className="flex space-x-3">
+                        {/* BOUTON INVITÉ */}
+                        <Link
+                            href="/guest-login"
+                            method="post"
+                            as="button"
+                            className="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 text-white font-bold rounded-md text-sm transition"
+                        >
+                            Mode Invité
+                        </Link>
+
+                        <PrimaryButton
+                            className="ms-4 bg-red-600 hover:bg-red-700 text-white font-bold"
+                            disabled={processing}
+                        >
+                            Se connecter
+                        </PrimaryButton>
+                    </div>
                 </div>
             </form>
         </GuestLayout>
