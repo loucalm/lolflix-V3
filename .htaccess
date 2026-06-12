@@ -1,0 +1,5 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Redirige de manière invisible tout le trafic vers le sous-dossier public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>

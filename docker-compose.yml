@@ -1,0 +1,57 @@
+version: "3.8"
+
+services:
+  # Le conteneur PHP + Node.js
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: lolflix-app
+    container_name: lolflix-app
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: app
+    volumes:
+      - ./:/var/www
+    networks:
+      - lolflix-network
+
+  # Le serveur Web Nginx (qui remplace LiteSpeed en local)
+  webserver:
+    image: nginx:alpine
+    container_name: lolflix-webserver
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d/
+    networks:
+      - lolflix-network
+    depends_on:
+      - app
+
+  # La Base de données MySQL (Image 2)
+  db:
+    image: mysql:8.0
+    container_name: lolflix-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: u659328069_lolflix
+      # En local, on définit un mot de passe root simple
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - lolflix-db-data:/var/lib/mysql
+    networks:
+      - lolflix-network
+
+networks:
+  lolflix-network:
+    driver: bridge
+
+volumes:
+  lolflix-db-data:
+    driver: local
