@@ -7,7 +7,7 @@ export default function Watch({ video }) {
             <Head title={`Regarder ${video.title}`} />
 
             <main className="flex-grow flex flex-col items-center justify-center pt-20">
-                <div className="w-full p-4 max-w-7xl">
+                <div className="w-full p-4">
                     <Link
                         href={route("catalog")}
                         className="inline-flex items-center text-xs font-bold bg-zinc-900 hover:bg-zinc-800 text-gray-300 px-4 py-2 rounded border border-zinc-800 mb-4 transition"
@@ -30,7 +30,7 @@ export default function Watch({ video }) {
             </main>
 
             <section className="bg-zinc-950 p-6 lg:p-12 border-t border-zinc-900">
-                <div className="max-w-4xl mx-auto space-y-3">
+                <div className="mx-auto space-y-3">
                     <h1 className="text-2xl lg:text-4xl font-extrabold tracking-tight">
                         {video.title}
                     </h1>

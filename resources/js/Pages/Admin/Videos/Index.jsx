@@ -70,7 +70,7 @@ export default function Index({ videos }) {
         <div className="bg-zinc-950 min-h-screen text-white font-sans p-6 lg:p-12">
             <Head title="Gestion des vidéos" />
 
-            <div className="max-w-7xl mx-auto space-y-8">
+            <div className="mx-auto space-y-8">
                 {/* HEADER PANEL */}
                 <div className="flex justify-between items-center border-b border-zinc-800 pb-4">
                     <div>

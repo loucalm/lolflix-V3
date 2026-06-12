@@ -33,11 +33,11 @@ export default function Dashboard({
                     <div className="relative h-[56.25vw] max-h-[100vh] w-full overflow-hidden bg-black shadow-inner">
                         <img
                             src={`https://img.youtube.com/vi/${heroVideo.youtube_id}/maxresdefault.jpg`}
-                            className="w-full h-full object-cover opacity-60 filter brightness-90"
+                            className="w-full object-fit filter brightness-90"
                             alt=""
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-black/50" />
-                        <div className="absolute bottom-[10%] left-4 lg:left-12 max-w-xl space-y-4">
+                        <div className="absolute bottom-[10%] left-4 max-w-xl space-y-4 sm:left-6 lg:left-8">
                             <span className="bg-red-600 text-white text-xs px-2.5 py-1 rounded-sm uppercase font-bold tracking-wider">
                                 À la une
                             </span>
@@ -61,7 +61,7 @@ export default function Dashboard({
 
                 {/* GRILLES DE VIDÉOS */}
                 <div
-                    className={`mx-auto px-4 lg:px-8 space-y-10 ${heroVideo && !search ? "mt-8" : "mt-24"}`}
+                    className={`mx-auto space-y-10 px-4 pt-8 sm:px-6 lg:px-8 ${heroVideo && !search ? "mt-8" : "mt-24"}`}
                 >
                     {/* MA LISTE */}
                     {favorites && favorites.length > 0 && (
