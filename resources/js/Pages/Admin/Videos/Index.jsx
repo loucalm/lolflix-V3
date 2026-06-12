@@ -68,7 +68,7 @@ export default function Index({ videos }) {
 
     return (
         <div className="bg-zinc-950 min-h-screen text-white font-sans p-6 lg:p-12">
-            <Head title="Gestion des vidéos - Lolflix" />
+            <Head title="Gestion des vidéos" />
 
             <div className="max-w-7xl mx-auto space-y-8">
                 {/* HEADER PANEL */}

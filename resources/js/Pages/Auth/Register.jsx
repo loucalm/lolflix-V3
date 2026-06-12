@@ -27,7 +27,7 @@ export default function Register() {
 
     return (
         <GuestLayout>
-            <Head title="S'inscrire à Lolflix" />
+            <Head title="S'inscrire" />
 
             <form onSubmit={submit} className="space-y-4">
                 <div>

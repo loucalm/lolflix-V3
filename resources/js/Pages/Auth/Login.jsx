@@ -27,7 +27,7 @@ export default function Login({ status }) {
 
     return (
         <GuestLayout>
-            <Head title="Connexion Lolflix" />
+            <Head title="Connexion" />
 
             {status && (
                 <div className="mb-4 font-medium text-sm text-green-600">
