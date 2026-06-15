@@ -1,5 +1,6 @@
 import { Head, useForm, Link } from "@inertiajs/react";
 import { useState } from "react";
+import { ArrowLeft, PencilLine, PlusCircle } from "lucide-react";
 
 export default function Index({ videos }) {
     const [editingVideo, setEditingVideo] = useState(null);
@@ -86,7 +87,10 @@ export default function Index({ videos }) {
                         href={route("catalog")}
                         className="bg-zinc-800 hover:bg-zinc-700 text-sm px-4 py-2 rounded font-bold transition"
                     >
-                        ← Retour au Site
+                        <span className="inline-flex items-center gap-2">
+                            <ArrowLeft size={14} />
+                            Retour au Site
+                        </span>
                     </Link>
                 </div>
 
@@ -94,9 +98,16 @@ export default function Index({ videos }) {
                     {/* COLONNE 1 : FORMULAIRE D'AJOUT / MODIFICATION */}
                     <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 h-fit">
                         <h2 className="text-xl font-bold mb-4 text-gray-200">
-                            {editingVideo
-                                ? "📝 Modifier la vidéo"
-                                : "➕ Ajouter une vidéo"}
+                            <span className="inline-flex items-center gap-2">
+                                {editingVideo ? (
+                                    <PencilLine size={18} />
+                                ) : (
+                                    <PlusCircle size={18} />
+                                )}
+                                {editingVideo
+                                    ? "Modifier la vidéo"
+                                    : "Ajouter une vidéo"}
+                            </span>
                         </h2>
 
                         <form onSubmit={handleSubmit} className="space-y-4">
@@ -163,7 +174,7 @@ export default function Index({ videos }) {
                                 </div>
                                 <div>
                                     <label className="block text-xs uppercase tracking-wide text-gray-400 font-bold mb-1">
-                                        Durée (secondes)
+                                        Durée (minutes)
                                     </label>
                                     <input
                                         type="number"
@@ -193,11 +204,8 @@ export default function Index({ videos }) {
                                     className="w-full bg-zinc-950 border border-zinc-700 rounded p-2 text-sm text-white focus:border-red-600 focus:ring-0"
                                 >
                                     <option value="Vlogs">Vlogs</option>
-                                    <option value="Films">Films</option>
-                                    <option value="Séries">Séries</option>
-                                    <option value="Documentaires">
-                                        Documentaires
-                                    </option>
+                                    <option value="Films">Best-of</option>
+                                    <option value="Séries">Autre</option>
                                 </select>
                                 {errors.category && (
                                     <span className="text-red-500 text-xs">

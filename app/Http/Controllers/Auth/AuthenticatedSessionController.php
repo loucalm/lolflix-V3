@@ -32,6 +32,7 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+        $request->session()->flash('sound', 'tudum');
 
         return redirect()->intended(route('catalog'));
     }

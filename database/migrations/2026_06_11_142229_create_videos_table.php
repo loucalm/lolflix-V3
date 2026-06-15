@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('youtube_id', 11)->unique(); // Ex: dQw4w9WgXcQ
             $table->string('category'); // Pour trier : "Série", "Film", "Humour", etc.
-            $table->integer('duration')->nullable(); // Durée en secondes si besoin
+            $table->integer('duration')->nullable(); // Durée en minutes si besoin
             $table->timestamps();
         });
     }

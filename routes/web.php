@@ -49,13 +49,21 @@ Route::get('/', function (Request $request) {
 // 2. CONNEXION EN TANT QU'INVITÉ (Reste inchangé)
 Route::post('/guest-login', function () {
     session()->put('is_guest', true);
+    session()->flash('sound', 'tudum');
     return redirect()->route('catalog');
 })->name('guest.login');
 
 // 3. PAGE DE VISIONNAGE (/watch/{id})
 Route::get('/watch/{video}', function (Video $video) {
+    $relatedVideos = Video::query()
+        ->where('id', '!=', $video->id)
+        ->inRandomOrder()
+        ->limit(8)
+        ->get();
+
     return Inertia::render('Watch', [
-        'video' => $video
+        'video' => $video,
+        'relatedVideos' => $relatedVideos,
     ]);
 })->name('videos.watch');
 

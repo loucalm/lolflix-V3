@@ -1,180 +1,172 @@
-import { Link, usePage, router } from "@inertiajs/react";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
+import { Link, usePage } from "@inertiajs/react";
+import useSound from "use-sound";
+import { Home, LogOut, Search, UserCircle2, X } from "lucide-react";
+import ApplicationLogo from "@/Components/ApplicationLogo";
 
-export default function AppLayout({
-    children,
-    search,
-    setSearch,
-    hideHeroAndSearch = false,
-}) {
+export default function AppLayout({ children, search, setSearch }) {
     const { auth, isGuest } = usePage().props;
-    const [dropdownOpen, setDropdownOpen] = useState(false);
-    const dropdownRef = useRef(null);
-    const [isScrolled, setIsScrolled] = useState(false);
+    const user = auth?.user;
+    const [isTop, setIsTop] = useState(true);
 
-    // Fermer le menu déroulant si on clique en dehors
+    const [playHover] = useSound("/sounds/hover.mp3", {
+        volume: 0.15,
+        interrupt: true,
+        preload: true,
+    });
+    const [playClick] = useSound("/sounds/click.mp3", {
+        volume: 0.3,
+        interrupt: true,
+        preload: true,
+    });
+
     useEffect(() => {
         const handleScroll = () => {
-            // Si le scroll vertical dépasse 20 pixels, on passe à true
-            if (window.scrollY > 20) {
-                setIsScrolled(true);
-            } else {
-                setIsScrolled(false);
-            }
+            setIsTop(window.scrollY <= 10);
         };
-        // Ajout de l'écouteur d'événement au montage du composant
+
+        handleScroll();
         window.addEventListener("scroll", handleScroll);
 
-        // Nettoyage de l'écouteur au démontage pour éviter les fuites de mémoire
-        return () => {
-            window.removeEventListener("scroll", handleScroll);
-        };
-
-        function handleClickOutside(event) {
-            if (
-                dropdownRef.current &&
-                !dropdownRef.current.contains(event.target)
-            ) {
-                setDropdownOpen(false);
-            }
-        }
-        document.addEventListener("mousedown", handleClickOutside);
-        return () =>
-            document.removeEventListener("mousedown", handleClickOutside);
+        return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
+    useEffect(() => {
+        const interactiveSelector =
+            'a, button, [role="button"], input[type="button"], input[type="submit"]';
+
+        const handleMouseOver = (event) => {
+            const interactiveElement =
+                event.target.closest(interactiveSelector);
+
+            if (!interactiveElement) {
+                return;
+            }
+
+            if (
+                event.relatedTarget &&
+                interactiveElement.contains(event.relatedTarget)
+            ) {
+                return;
+            }
+
+            playHover();
+        };
+
+        const handlePointerDown = (event) => {
+            const interactiveElement =
+                event.target.closest(interactiveSelector);
+
+            if (!interactiveElement) {
+                return;
+            }
+
+            playClick();
+        };
+
+        document.addEventListener("mouseover", handleMouseOver, true);
+        document.addEventListener("pointerdown", handlePointerDown, true);
+
+        return () => {
+            document.removeEventListener("mouseover", handleMouseOver, true);
+            document.removeEventListener(
+                "pointerdown",
+                handlePointerDown,
+                true,
+            );
+        };
+    }, [playClick, playHover]);
+
+    const logoutRoute = isGuest ? route("guest.logout") : route("logout");
+
     return (
-        <div className="bg-zinc-950 min-h-screen text-white font-sans flex flex-col justify-between">
-            {/* HEADER UNIQUE ET GLOBAL */}
-            <nav
-                className={`fixed top-0 w-full z-50 transition-colors duration-500 ${
-                    isScrolled
-                        ? "bg-gradient-to-b from-black/90 to-zinc-950/60 shadow-lg backdrop-blur-md"
-                        : "bg-gradient-to-b from-black/70 to-transparent"
+        <div className="min-h-screen bg-zinc-950 text-white font-sans antialiased">
+            <header
+                className={`fixed top-0 z-40 w-full transition-colors duration-500 ease-in-out ${
+                    isTop
+                        ? "bg-gradient-to-b from-black/70 to-transparent"
+                        : "bg-zinc-950/80 backdrop-blur-sm"
                 }`}
             >
-                <div className="mx-auto flex w-full items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
-                    <div className="flex items-center space-x-6">
-                        <Link
-                            href={route("catalog")}
-                            className="text-red-600 font-black text-2xl lg:text-3xl tracking-tighter uppercase select-none"
-                        >
-                            Lolflix
+                <div className="grid grid-cols-1 items-center gap-4 px-4 py-4 md:grid-cols-[auto_minmax(0,1fr)_auto] md:gap-8 md:px-8">
+                    <div className="flex items-center gap-8">
+                        <Link href={route("catalog")}>
+                            <ApplicationLogo className="h-6 w-auto md:h-10" />
                         </Link>
                     </div>
 
-                    {/* BARRE DE RECHERCHE CENTRALE (Affichée uniquement si pas masquée explicitement) */}
-                    {!hideHeroAndSearch ? (
-                        <div className="flex-1 max-w-md">
-                            <input
-                                type="text"
-                                placeholder="Rechercher une vidéo, une catégorie..."
-                                value={search || ""}
-                                onChange={(e) => setSearch(e.target.value)}
-                                className="w-full rounded bg-zinc-900/80 text-white border border-zinc-700 focus:border-red-600 focus:ring-1 focus:ring-red-600 rounded-md py-1.5 px-4 text-sm transition"
-                            />
+                    {typeof setSearch === "function" && (
+                        <div className="w-full flex justify-center">
+                            <div className="relative w-full max-w-3xl">
+                                <Search
+                                    className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"
+                                    size={18}
+                                />
+                                <input
+                                    type="search"
+                                    value={search || ""}
+                                    onChange={(event) =>
+                                        setSearch(event.target.value)
+                                    }
+                                    placeholder="Rechercher une vidéo, une catégorie, un mot-clé..."
+                                    className="w-full rounded-full border border-white/20 bg-black/50 py-2 px-11 text-sm text-white outline-none transition placeholder:text-zinc-500 focus:border-red-500/60 focus:bg-white/10 focus:ring-0"
+                                />
+                                {search ? (
+                                    <button
+                                        type="button"
+                                        onClick={() => setSearch("")}
+                                        className="text-nowrap absolute right-3 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full text-zinc-400 transition hover:bg-white/10 hover:text-white"
+                                        aria-label="Effacer la recherche"
+                                    >
+                                        <X size={16} />
+                                    </button>
+                                ) : null}
+                            </div>
                         </div>
-                    ) : (
-                        <div className="flex-1" />
                     )}
 
-                    {/* MENU UTILISATEUR AVEC DROPDOWN */}
-                    <div
-                        className="flex items-center space-x-4 relative"
-                        ref={dropdownRef}
-                    >
-                        {isGuest ? (
+                    <div className="flex justify-self-end gap-3 text-sm">
+                        {user ? (
+                            <>
+                                <span className="hidden items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-zinc-200 sm:inline-flex">
+                                    <UserCircle2 size={16} />
+                                    {user.name}
+                                </span>
+                                <Link
+                                    href={logoutRoute}
+                                    method="post"
+                                    as="button"
+                                    className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-zinc-200 transition hover:bg-white/10 hover:text-white"
+                                >
+                                    <LogOut size={16} />
+                                    Déconnexion
+                                </Link>
+                            </>
+                        ) : isGuest ? (
                             <Link
                                 href={route("guest.logout")}
                                 method="post"
                                 as="button"
-                                className="text-xs bg-red-600 hover:bg-red-700 px-3 py-1.5 rounded font-bold transition"
+                                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-zinc-200 transition hover:bg-white/10 hover:text-white"
                             >
+                                <LogOut size={16} />
                                 Quitter l'invité
                             </Link>
                         ) : (
-                            <div className="relative">
-                                {/* Bouton Avatar Déclencheur */}
-                                <button
-                                    onClick={() =>
-                                        setDropdownOpen(!dropdownOpen)
-                                    }
-                                    className="flex items-center space-x-3 focus:outline-none group bg-zinc-900/50 hover:bg-zinc-900 px-3 py-1.5 rounded-md transition border border-zinc-800"
-                                >
-                                    <span className="text-sm font-semibold text-gray-300 group-hover:text-white hidden sm:inline">
-                                        {auth.user?.name}
-                                    </span>
-                                    <div className="w-8 h-8 rounded bg-gradient-to-tr from-red-600 to-amber-500 flex items-center justify-center font-bold text-sm shadow-md select-none text-white">
-                                        {auth.user?.name
-                                            ? auth.user.name[0].toUpperCase()
-                                            : "U"}
-                                    </div>
-                                </button>
-
-                                {/* MENU DÉROULANT STYLE NETFLIX */}
-                                {dropdownOpen && (
-                                    <div className="absolute right-0 mt-2 w-48 bg-zinc-900 border border-zinc-800 rounded-md shadow-2xl py-1 z-50 animate-fade-in text-sm">
-                                        {auth.user?.role === "admin" && (
-                                            <Link
-                                                href={route(
-                                                    "admin.videos.index",
-                                                )}
-                                                className="block px-4 py-2.5 text-xs text-red-500 font-bold uppercase tracking-wider hover:bg-zinc-800 transition border-b border-zinc-800/60"
-                                            >
-                                                ⚙️ Back-Office
-                                            </Link>
-                                        )}
-                                        <Link
-                                            href={route("profile.edit")}
-                                            className="block px-4 py-2.5 text-gray-300 hover:text-white hover:bg-zinc-800 transition"
-                                        >
-                                            Mon Profil
-                                        </Link>
-                                        <Link
-                                            href={route("logout")}
-                                            method="post"
-                                            as="button"
-                                            className="w-full text-left block px-4 py-2.5 text-gray-400 hover:text-white hover:bg-zinc-800 transition border-t border-zinc-800/60"
-                                        >
-                                            Se déconnecter
-                                        </Link>
-                                    </div>
-                                )}
-                            </div>
+                            <Link
+                                href={route("login")}
+                                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-zinc-200 transition hover:bg-white/10 hover:text-white"
+                            >
+                                Se connecter
+                            </Link>
                         )}
                     </div>
                 </div>
-            </nav>
+            </header>
 
-            {/* CONTENU DE LA PAGE EN COURS */}
-            <div className="flex-grow">{children}</div>
-
-            {/* FOOTER GLOBAL */}
-            <footer className="bg-zinc-900/40 border-t border-zinc-900 py-6 text-center text-sm text-gray-500">
-                <div className="mx-auto flex flex-col items-center justify-between space-y-4 px-4 sm:flex-row sm:space-y-0 sm:px-6 lg:px-8">
-                    <div className="font-black text-red-600 uppercase tracking-tighter select-none">
-                        Lolflix © 2026
-                    </div>
-                    <div className="flex space-x-6">
-                        <a
-                            href="https://youtube.com"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:text-white transition"
-                        >
-                            YouTube
-                        </a>
-                        <a
-                            href="https://github.com"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:text-white transition"
-                        >
-                            GitHub
-                        </a>
-                    </div>
-                </div>
-            </footer>
+            <main className={typeof setSearch === "function" ? "" : ""}>
+                {children}
+            </main>
         </div>
     );
 }

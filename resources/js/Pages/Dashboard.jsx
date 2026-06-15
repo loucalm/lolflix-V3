@@ -1,16 +1,31 @@
 import { Head, Link, router } from "@inertiajs/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { Check, Play, Plus, Sparkles, X } from "lucide-react";
+import ApplicationLogo from "@/Components/ApplicationLogo";
 
 import AppLayout from "@/Layouts/AppLayout";
 
 export default function Dashboard({
     auth,
+    flash,
     favorites,
     videosByCategory,
     heroVideo,
     filters,
 }) {
     const [search, setSearch] = useState(filters.search || "");
+    const hasPlayedTudum = useRef(false);
+
+    useEffect(() => {
+        if (flash?.sound !== "tudum" || hasPlayedTudum.current) {
+            return;
+        }
+
+        hasPlayedTudum.current = true;
+        const audio = new Audio("/sounds/tudum.mp3");
+        audio.volume = 0.55;
+        audio.play().catch(() => {});
+    }, [flash?.sound]);
 
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
@@ -27,7 +42,7 @@ export default function Dashboard({
         <AppLayout search={search} setSearch={setSearch}>
             <Head title="Catalogue" />
 
-            <main className="pb-12">
+            <main className="animate-catalog-enter pb-12">
                 {/* HERO BANNER */}
                 {heroVideo && !search && (
                     <div className="relative h-[56.25vw] max-h-[100vh] w-full overflow-hidden bg-black shadow-inner">
@@ -36,11 +51,25 @@ export default function Dashboard({
                             className="w-full object-fit filter brightness-90"
                             alt=""
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-black/50" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-zinc-950/0" />
                         <div className="absolute bottom-[10%] left-4 max-w-xl space-y-4 sm:left-6 lg:left-8">
                             <span className="bg-red-600 text-white text-xs px-2.5 py-1 rounded-sm uppercase font-bold tracking-wider">
+                                <Sparkles
+                                    size={12}
+                                    className="mr-1 inline-block"
+                                />
                                 À la une
                             </span>
+                            <div className="flex items-center gap-2 font-semibold text-md text-white/80">
+                                <ApplicationLogo className="h-4 w-auto" />
+                                <p>Series</p>
+                                <span className="text-white/50">•</span>
+                                <p>{heroVideo.duration ?? "--"} min</p>
+                                <span className="text-white/50">•</span>
+                                <p className="line-clamp-1">
+                                    {heroVideo.category}
+                                </p>
+                            </div>
                             <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight drop-shadow-md">
                                 {heroVideo.title}
                             </h1>
@@ -50,9 +79,10 @@ export default function Dashboard({
                             <div className="pt-2">
                                 <Link
                                     href={route("videos.watch", heroVideo.id)}
-                                    className="inline-flex items-center bg-white text-black hover:bg-gray-200 px-6 py-2 rounded-md font-bold transition shadow-lg"
+                                    className="inline-flex items-center gap-2 rounded-md bg-white px-6 py-2 font-bold text-black shadow-lg transition hover:bg-gray-200"
                                 >
-                                    ▶ Regarder
+                                    <Play size={16} fill="currentColor" />
+                                    Regarder
                                 </Link>
                             </div>
                         </div>
@@ -61,7 +91,7 @@ export default function Dashboard({
 
                 {/* GRILLES DE VIDÉOS */}
                 <div
-                    className={`mx-auto space-y-10 px-4 pt-8 sm:px-6 lg:px-8 ${heroVideo && !search ? "mt-8" : "mt-24"}`}
+                    className={`mx-auto space-y-10 px-4 sm:px-6 lg:px-8 ${heroVideo && !search ? "pt-8" : "pt-24"}`}
                 >
                     {/* MA LISTE */}
                     {favorites && favorites.length > 0 && (
@@ -98,9 +128,9 @@ export default function Dashboard({
                                                 )}
                                                 method="post"
                                                 as="button"
-                                                className="text-xs text-red-400 mt-1 hover:underline text-left pointer-events-auto"
+                                                className="pointer-events-auto mt-1 inline-flex items-center gap-1 text-left text-xs text-red-400 hover:underline"
                                             >
-                                                ✕ Retirer
+                                                <X size={12} /> Retirer
                                             </Link>
                                         </div>
                                     </div>
@@ -152,11 +182,28 @@ export default function Dashboard({
                                                             )}
                                                             method="post"
                                                             as="button"
-                                                            className="text-xs text-left mt-1.5 text-gray-300 hover:text-white font-semibold pointer-events-auto"
+                                                            className="pointer-events-auto mt-1.5 inline-flex items-center gap-1 text-left text-xs font-semibold text-gray-300 hover:text-white"
                                                         >
-                                                            {isFav
-                                                                ? "✓ Dans ma liste"
-                                                                : "+ Ma Liste"}
+                                                            {isFav ? (
+                                                                <>
+                                                                    <Check
+                                                                        size={
+                                                                            12
+                                                                        }
+                                                                    />
+                                                                    Dans ma
+                                                                    liste
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    <Plus
+                                                                        size={
+                                                                            12
+                                                                        }
+                                                                    />
+                                                                    Ma Liste
+                                                                </>
+                                                            )}
                                                         </Link>
                                                     ) : (
                                                         <p className="text-[10px] text-gray-400 mt-1.5 italic">
