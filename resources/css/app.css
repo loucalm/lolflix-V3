@@ -3,19 +3,27 @@
 @tailwind utilities;
 
 @layer utilities {
-	@keyframes catalog-enter {
-		0% {
-			opacity: 0;
-			transform: translateY(16px) scale(0.98);
-		}
+    /* Masquer les barres de défilement tout en gardant le scroll actif */
+    .scrollbar-none::-webkit-scrollbar {
+        display: none;
+    }
+    .scrollbar-none {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    @keyframes catalog-enter {
+        0% {
+            opacity: 0;
+            transform: translateY(16px) scale(0.98);
+        }
 
-		100% {
-			opacity: 1;
-			transform: translateY(0) scale(1);
-		}
-	}
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
 
-	.animate-catalog-enter {
-		animation: catalog-enter 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
-	}
+    .animate-catalog-enter {
+        animation: catalog-enter 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
 }

@@ -55,6 +55,10 @@ Route::post('/guest-login', function () {
 
 // 3. PAGE DE VISIONNAGE (/watch/{id})
 Route::get('/watch/{video}', function (Video $video) {
+    if (!Auth::check() && !session()->get('is_guest')) {
+        return redirect()->route('login');
+    }
+
     $relatedVideos = Video::query()
         ->where('id', '!=', $video->id)
         ->inRandomOrder()
@@ -64,6 +68,7 @@ Route::get('/watch/{video}', function (Video $video) {
     return Inertia::render('Watch', [
         'video' => $video,
         'relatedVideos' => $relatedVideos,
+        'isGuest' => session()->get('is_guest', false),
     ]);
 })->name('videos.watch');
 

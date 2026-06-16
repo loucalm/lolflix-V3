@@ -42,27 +42,23 @@ export default function Dashboard({
         <AppLayout search={search} setSearch={setSearch}>
             <Head title="Catalogue" />
 
-            <main className="animate-catalog-enter pb-12">
+            <main className="animate-catalog-enter pb-12 select-none">
                 {/* HERO BANNER */}
                 {heroVideo && !search && (
-                    <div className="relative h-[56.25vw] max-h-[100vh] w-full overflow-hidden bg-black shadow-inner">
+                    <div className="relative h-[56.25vw] max-h-[85vh] w-full overflow-hidden bg-black shadow-inner">
                         <img
                             src={`https://img.youtube.com/vi/${heroVideo.youtube_id}/maxresdefault.jpg`}
-                            className="w-full object-fit filter brightness-90"
+                            className="w-full h-full object-cover filter brightness-75"
                             alt=""
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-zinc-950/0" />
-                        <div className="absolute bottom-[10%] left-4 max-w-xl space-y-4 sm:left-6 lg:left-8">
-                            <span className="bg-red-600 text-white text-xs px-2.5 py-1 rounded-sm uppercase font-bold tracking-wider">
-                                <Sparkles
-                                    size={12}
-                                    className="mr-1 inline-block"
-                                />
-                                À la une
+                        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
+                        <div className="absolute bottom-[15%] left-4 max-w-xl space-y-4 sm:left-6 lg:left-12">
+                            <span className="inline-flex items-center gap-1 bg-red-600 text-white text-xs px-2.5 py-1 rounded-sm uppercase font-bold tracking-wider">
+                                <Sparkles size={12} />À la une
                             </span>
-                            <div className="flex items-center gap-2 font-semibold text-md text-white/80">
+                            <div className="flex items-center gap-2 font-semibold text-sm text-white/80">
                                 <ApplicationLogo className="h-4 w-auto" />
-                                <p>Series</p>
+                                <p>Séries</p>
                                 <span className="text-white/50">•</span>
                                 <p>{heroVideo.duration ?? "--"} min</p>
                                 <span className="text-white/50">•</span>
@@ -70,16 +66,16 @@ export default function Dashboard({
                                     {heroVideo.category}
                                 </p>
                             </div>
-                            <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight drop-shadow-md">
+                            <h1 className="text-3xl md:text-5xl font-black tracking-tight drop-shadow-md text-white">
                                 {heroVideo.title}
                             </h1>
-                            <p className="text-gray-300 text-sm md:text-base hidden sm:line-clamp-3 drop-shadow">
+                            <p className="text-zinc-300 text-sm md:text-base hidden sm:line-clamp-3 drop-shadow">
                                 {heroVideo.description}
                             </p>
                             <div className="pt-2">
                                 <Link
                                     href={route("videos.watch", heroVideo.id)}
-                                    className="inline-flex items-center gap-2 rounded-md bg-white px-6 py-2 font-bold text-black shadow-lg transition hover:bg-gray-200"
+                                    className="inline-flex items-center gap-2 rounded-md bg-white px-6 py-2.5 font-bold text-black shadow-lg transition hover:bg-gray-200"
                                 >
                                     <Play size={16} fill="currentColor" />
                                     Regarder
@@ -89,21 +85,22 @@ export default function Dashboard({
                     </div>
                 )}
 
-                {/* GRILLES DE VIDÉOS */}
+                {/* SLIDERS DE VIDÉOS */}
                 <div
-                    className={`mx-auto space-y-10 px-4 sm:px-6 lg:px-8 ${heroVideo && !search ? "pt-8" : "pt-24"}`}
+                    className={`space-y-10 px-4 sm:px-6 lg:px-12 ${heroVideo && !search ? "-mt-12 relative z-10" : "pt-28"}`}
                 >
-                    {/* MA LISTE */}
+                    {/* SECTION : MA LISTE */}
                     {favorites && favorites.length > 0 && (
-                        <div>
-                            <h3 className="text-xl font-bold mb-4 text-red-600 tracking-wide">
+                        <div className="space-y-2">
+                            <h3 className="text-lg md:text-xl font-bold text-white tracking-wide hover:text-red-500 transition duration-300">
                                 Ma Liste
                             </h3>
-                            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                            {/* Scroll horizontal conteneur */}
+                            <div className="flex gap-4 overflow-x-auto pb-4 pt-1 scroll-smooth snap-x scrollbar-none mask-gradient">
                                 {favorites.map((video) => (
                                     <div
                                         key={video.id}
-                                        className="relative group overflow-hidden rounded-md bg-zinc-900 aspect-video shadow-md"
+                                        className="relative group overflow-hidden rounded-md bg-zinc-900 aspect-video w-[45vw] sm:w-[30vw] md:w-[22vw] lg:w-[18vw] xl:w-[15vw] flex-shrink-0 snap-start shadow-lg border border-zinc-800/40"
                                     >
                                         <Link
                                             href={route(
@@ -113,12 +110,12 @@ export default function Dashboard({
                                         >
                                             <img
                                                 src={`https://img.youtube.com/vi/${video.youtube_id}/mqdefault.jpg`}
-                                                className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                                                className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                                                 alt=""
                                             />
                                         </Link>
-                                        <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-3 pointer-events-none">
-                                            <p className="font-bold text-sm truncate">
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3 pointer-events-none">
+                                            <p className="font-bold text-xs md:text-sm truncate text-white">
                                                 {video.title}
                                             </p>
                                             <Link
@@ -128,7 +125,7 @@ export default function Dashboard({
                                                 )}
                                                 method="post"
                                                 as="button"
-                                                className="pointer-events-auto mt-1 inline-flex items-center gap-1 text-left text-xs text-red-400 hover:underline"
+                                                className="pointer-events-auto mt-1 inline-flex items-center gap-1 text-left text-[11px] font-medium text-red-400 hover:text-red-300 transition"
                                             >
                                                 <X size={12} /> Retirer
                                             </Link>
@@ -139,14 +136,15 @@ export default function Dashboard({
                         </div>
                     )}
 
-                    {/* LES CATÉGORIES */}
+                    {/* SECTIONS : LES CATÉGORIES */}
                     {Object.keys(videosByCategory).length > 0 ? (
                         Object.keys(videosByCategory).map((category) => (
-                            <div key={category}>
-                                <h3 className="text-lg font-bold mb-3 capitalize text-gray-300 tracking-wide">
+                            <div key={category} className="space-y-2">
+                                <h3 className="text-base md:text-lg font-bold capitalize text-zinc-300 tracking-wide">
                                     {category}
                                 </h3>
-                                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                                {/* Scroll horizontal conteneur */}
+                                <div className="flex gap-4 overflow-x-auto pb-4 pt-1 scroll-smooth snap-x scrollbar-none">
                                     {videosByCategory[category].map((video) => {
                                         const isFav = favorites?.some(
                                             (fav) => fav.id === video.id,
@@ -154,7 +152,7 @@ export default function Dashboard({
                                         return (
                                             <div
                                                 key={video.id}
-                                                className="relative group overflow-hidden rounded-md bg-zinc-900 aspect-video shadow-md"
+                                                className="relative group overflow-hidden rounded-md bg-zinc-900 aspect-video w-[45vw] sm:w-[30vw] md:w-[22vw] lg:w-[18vw] xl:w-[15vw] flex-shrink-0 snap-start shadow-lg border border-zinc-800/40"
                                             >
                                                 <Link
                                                     href={route(
@@ -164,16 +162,15 @@ export default function Dashboard({
                                                 >
                                                     <img
                                                         src={`https://img.youtube.com/vi/${video.youtube_id}/mqdefault.jpg`}
-                                                        className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                                                        className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                                                         alt=""
                                                     />
                                                 </Link>
-                                                <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition duration-300 flex flex-col justify-end p-3 pointer-events-none">
-                                                    <p className="font-bold text-sm truncate">
+                                                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3 pointer-events-none">
+                                                    <p className="font-bold text-xs md:text-sm truncate text-white">
                                                         {video.title}
                                                     </p>
 
-                                                    {/* 2. CONDITION SUR LE BOUTON AJOUTER/RETIRER POUR LES GUESTS */}
                                                     {auth.user ? (
                                                         <Link
                                                             href={route(
@@ -182,7 +179,7 @@ export default function Dashboard({
                                                             )}
                                                             method="post"
                                                             as="button"
-                                                            className="pointer-events-auto mt-1.5 inline-flex items-center gap-1 text-left text-xs font-semibold text-gray-300 hover:text-white"
+                                                            className="pointer-events-auto mt-1 inline-flex items-center gap-1 text-left text-[11px] font-semibold text-zinc-400 hover:text-white transition"
                                                         >
                                                             {isFav ? (
                                                                 <>
@@ -190,6 +187,7 @@ export default function Dashboard({
                                                                         size={
                                                                             12
                                                                         }
+                                                                        className="text-red-500"
                                                                     />
                                                                     Dans ma
                                                                     liste
@@ -206,8 +204,8 @@ export default function Dashboard({
                                                             )}
                                                         </Link>
                                                     ) : (
-                                                        <p className="text-[10px] text-gray-400 mt-1.5 italic">
-                                                            Connectez-vous pour
+                                                        <p className="text-[10px] text-zinc-500 mt-1 italic">
+                                                            Abonnez-vous pour
                                                             ajouter
                                                         </p>
                                                     )}
@@ -219,7 +217,7 @@ export default function Dashboard({
                             </div>
                         ))
                     ) : (
-                        <p className="text-center text-gray-500 py-12">
+                        <p className="text-center text-zinc-500 py-16 text-sm">
                             Aucun résultat trouvé pour votre recherche.
                         </p>
                     )}
