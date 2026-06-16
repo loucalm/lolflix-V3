@@ -204,8 +204,8 @@ export default function Index({ videos }) {
                                     className="w-full bg-zinc-950 border border-zinc-700 rounded p-2 text-sm text-white focus:border-red-600 focus:ring-0"
                                 >
                                     <option value="Vlogs">Vlogs</option>
-                                    <option value="Films">Best-of</option>
-                                    <option value="Séries">Autre</option>
+                                    <option value="Best-of">Best-of</option>
+                                    <option value="Autre">Autre</option>
                                 </select>
                                 {errors.category && (
                                     <span className="text-red-500 text-xs">
