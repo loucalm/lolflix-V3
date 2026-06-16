@@ -45,14 +45,14 @@ export default function Dashboard({
             <main className="animate-catalog-enter pb-12 select-none">
                 {/* HERO BANNER */}
                 {heroVideo && !search && (
-                    <div className="relative h-[56.25vw] max-h-[85vh] w-full overflow-hidden bg-black shadow-inner">
+                    <div className="relative h-[56.25vw] max-h-[100vh] w-full overflow-hidden bg-black shadow-inner">
                         <img
                             src={`https://img.youtube.com/vi/${heroVideo.youtube_id}/maxresdefault.jpg`}
                             className="w-full h-full object-cover filter brightness-75"
                             alt=""
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
-                        <div className="absolute bottom-[15%] left-4 max-w-xl space-y-4 sm:left-6 lg:left-12">
+                        <div className="absolute bottom-0 md:bottom-12 left-4 max-w-xl space-y-4 sm:left-6 lg:left-12">
                             <span className="inline-flex items-center gap-1 bg-red-600 text-white text-xs px-2.5 py-1 rounded-sm uppercase font-bold tracking-wider">
                                 <Sparkles size={12} />À la une
                             </span>
@@ -87,7 +87,7 @@ export default function Dashboard({
 
                 {/* SLIDERS DE VIDÉOS */}
                 <div
-                    className={`space-y-10 px-4 sm:px-6 lg:px-12 ${heroVideo && !search ? "-mt-12 relative z-10" : "pt-28"}`}
+                    className={`space-y-10 px-4 sm:px-6 lg:px-12 ${heroVideo && !search ? "mt-12 relative z-10" : "pt-28"}`}
                 >
                     {/* SECTION : MA LISTE */}
                     {favorites && favorites.length > 0 && (
