@@ -9,6 +9,8 @@ import {
     X,
     ChevronDown,
     Settings,
+    TvMinimalPlay,
+    GitPullRequestCreateArrow,
 } from "lucide-react";
 import ApplicationLogo from "@/Components/ApplicationLogo";
 
@@ -255,6 +257,64 @@ export default function AppLayout({ children, search, setSearch }) {
 
             {/* ENVELOPPE DE CONTENU PRINCIPAL */}
             <div className="w-full">{children}</div>
+
+            {/* FOOTER PREMIUM STYLE CINÉMA */}
+            <footer className="w-full border-t border-zinc-900/60 bg-zinc-950/40 backdrop-blur-md py-8 mt-12 select-none">
+                <div className="mx-auto px-4 md:px-12 flex flex-col sm:flex-row items-center justify-between gap-6">
+                    {/* GAUCHE : Logo & Crédit */}
+                    <div className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
+                        <Link href={route("catalog")}>
+                            <ApplicationLogo className="h-5 w-auto" />
+                        </Link>
+                        <span className="hidden sm:inline text-zinc-700">
+                            |
+                        </span>
+                        <p className="text-xs text-zinc-500 font-medium tracking-wide">
+                            © {new Date().getFullYear()}
+                        </p>
+                    </div>
+
+                    {/* MILIEU : Navigation simple */}
+                    <nav className="flex items-center gap-6 text-xs font-semibold text-zinc-400">
+                        <Link
+                            href={route("catalog")}
+                            className="hover:text-white transition"
+                        >
+                            Catalogue
+                        </Link>
+                        {user && (
+                            <Link
+                                href={route("profile.edit")}
+                                className="hover:text-white transition"
+                            >
+                                Mon Profil
+                            </Link>
+                        )}
+                    </nav>
+
+                    {/* DROITE : Réseaux sociaux (YouTube & GitHub) */}
+                    <div className="flex items-center gap-4 text-zinc-500">
+                        <a
+                            href="https://www.youtube.com/@lolstudio4205"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:text-red-500 transition duration-200"
+                            aria-label="Me suivre sur YouTube"
+                        >
+                            <TvMinimalPlay size={18} />
+                        </a>
+                        <a
+                            href="https://github.com/loucalm/lolflix-V3"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:text-white transition duration-200"
+                            aria-label="Voir le GitHub"
+                        >
+                            <GitPullRequestCreateArrow size={18} />
+                        </a>
+                    </div>
+                </div>
+            </footer>
         </div>
     );
 }
